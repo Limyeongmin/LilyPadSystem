@@ -1,5 +1,6 @@
 package com.example.lym.lilypad;
 
+import android.content.Intent;
 import android.media.AudioManager;
 import android.media.SoundPool;
 import android.os.Bundle;
@@ -9,6 +10,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 /**
  * Created by LYM on 2016-11-10.
@@ -17,6 +19,7 @@ public class AddObject extends MainActivity {
     Button btnSave, btnCancel, btnInit, btnAsk;
     EditText etName;
     SoundPool sound;
+    TextView result;
     int soundID[] = new int[7];
     final String[] Bell = {"벨소리를 선택하세요", "벨소리1", "벨소리2", "벨소리3", "벨소리4", "벨소리5", "벨소리6"};
     final Integer[] BellId = {null, R.raw.bell1, R.raw.bell2, R.raw.bell3, R.raw.bell4, R.raw.bell5, R.raw.bell6};
@@ -27,6 +30,13 @@ public class AddObject extends MainActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_object);
         setTitle("타이틀을 입력하세요.");
+        result = (TextView)findViewById(R.id.result);
+        etName = (EditText) findViewById(R.id.etName);
+        btnSave = (Button) findViewById(R.id.btnSave);
+        btnCancel = (Button) findViewById(R.id.btnCancel);
+        Spinner spinner = (Spinner) findViewById(R.id.spinner);
+
+
         //DB 생성
         final DBHelper dbHelper = new DBHelper(getApplicationContext(), "BTNINFO.db", null, 1);
 
@@ -39,8 +49,7 @@ public class AddObject extends MainActivity {
         // DB 입력 결과를 확인하기 위한 텍스트뷰
 
 
-        // 벨소리 선택을 위한 스피너
-        Spinner spinner = (Spinner) findViewById(R.id.spinner);
+
         spinner.setPrompt("벨소리 선택");
         ArrayAdapter<String> adapter;
         adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, Bell);
@@ -57,33 +66,32 @@ public class AddObject extends MainActivity {
                 // 스피너에서 아무것도 선택하지 않았을 경우
             }
         });
-        // 에디트 텍스트 : Name
-        etName = (EditText) findViewById(R.id.etName);
-        // 버튼
-        btnSave = (Button) findViewById(R.id.btnSave);
+
 
         btnSave.setOnClickListener(new View.OnClickListener() {
-           @Override
+        @Override
            public void onClick(View v) {
                String btnName = etName.getText().toString();
                int bell = selectedBell;
 
                dbHelper.insert(btnName, bell);
+            Intent intent = new Intent(AddObject.this, MainActivity.class);
+            startActivity(intent);
 
                }
            }
 
         );
 
-        btnCancel = (Button) findViewById(R.id.btnCancel);
-        btnCancel.setOnClickListener(new View.OnClickListener() {
-                                         @Override
-                                         public void onClick(View v) {
-                                             finish();
-                                         }
-                                     }
 
-        );
+        btnCancel.setOnClickListener(new View.OnClickListener() {
+             @Override
+             public void onClick(View v) {
+                 finish();
+             }
+        });
+
+
 
 
 
